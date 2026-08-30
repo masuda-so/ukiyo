@@ -1,0 +1,109 @@
+{
+  "identifier" : "Ukiyo-LOCAL-STOREKIT",
+  "nonRenewingSubscriptions" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "1000000001",
+      "localizations" : [
+        {
+          "description" : "One-time access to Ukiyo Pro for 24 hours. This pass does not renew automatically.",
+          "displayName" : "Ukiyo Pro Daily Pass",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Ukiyo Proを24時間利用できる買い切りパスです。自動更新されません。",
+          "displayName" : "Ukiyo Pro デイリーパス",
+          "locale" : "ja_JP"
+        }
+      ],
+      "productID" : "llc.ether.ukiyo.pro.daily",
+      "referenceName" : "Ukiyo Pro Daily Pass",
+      "type" : "NonRenewingSubscription"
+    }
+  ],
+  "products" : [
+  ],
+  "settings" : {
+    "_locale" : "en_US",
+    "_storefront" : "USA"
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "Ukiyo-PRO",
+      "localizations" : [
+        {
+          "locale" : "en_US",
+          "name" : "Ukiyo Pro"
+        },
+        {
+          "locale" : "ja_JP",
+          "name" : "Ukiyo Pro"
+        }
+      ],
+      "name" : "Ukiyo Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+          ],
+          "codeOffers" : [
+          ],
+          "displayPrice" : "2.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "2000000001",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Monthly access to the on-device Ukiyo assistant.",
+              "displayName" : "Ukiyo Pro Monthly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "オンデバイスのUkiyoアシスタントを月ごとに利用できます。",
+              "displayName" : "Ukiyo Pro 月額",
+              "locale" : "ja_JP"
+            }
+          ],
+          "productID" : "llc.ether.ukiyo.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Ukiyo Pro Monthly",
+          "subscriptionGroupID" : "Ukiyo-PRO",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+          ],
+          "codeOffers" : [
+          ],
+          "displayPrice" : "29.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "2000000002",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Yearly access to the on-device Ukiyo assistant.",
+              "displayName" : "Ukiyo Pro Yearly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "オンデバイスのUkiyoアシスタントを年ごとに利用できます。",
+              "displayName" : "Ukiyo Pro 年額",
+              "locale" : "ja_JP"
+            }
+          ],
+          "productID" : "llc.ether.ukiyo.pro.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Ukiyo Pro Yearly",
+          "subscriptionGroupID" : "Ukiyo-PRO",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}
