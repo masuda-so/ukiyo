@@ -45,6 +45,22 @@ final class UkiyoFoundationTests: XCTestCase {
     )
   }
 
+  func testActiveDailyPassIsHiddenFromPurchaseOptions() {
+    XCTAssertEqual(
+      ProductID.offeredProductIDs(dailyPassIsActive: false),
+      ProductID.all
+    )
+    XCTAssertEqual(
+      ProductID.offeredProductIDs(dailyPassIsActive: true),
+      ProductID.subscriptions
+    )
+    XCTAssertFalse(
+      ProductID.offeredProductIDs(dailyPassIsActive: true).contains(
+        UkiyoCommerceCatalog.dailyPassProductID
+      )
+    )
+  }
+
   @MainActor
   func testApplicationSectionsRemainDistinct() {
     let sections: Set<AppSection> = [.lens, .assistant, .pro, .settings]
@@ -333,6 +349,46 @@ final class UkiyoFoundationTests: XCTestCase {
   }
 
   @MainActor
+  func testImportedLensImageDefaultsToCompatibleProvenance() {
+    let image = LensImage(imageData: Data([0x01]))
+
+    XCTAssertEqual(image.provenance, .importedPhoto)
+    XCTAssertFalse(image.isAIGenerated)
+    XCTAssertNil(image.sourceImageData)
+
+    image.provenanceRawValue = nil
+    XCTAssertEqual(image.provenance, .importedPhoto)
+
+    image.provenanceRawValue = "future-value"
+    XCTAssertEqual(image.provenance, .importedPhoto)
+  }
+
+  @MainActor
+  func testGeneratedLensImagePersistsSourceAndResultSeparately() throws {
+    let dataContainer = DataContainer(isStoredInMemoryOnly: true)
+    let sourceData = Data([0x01])
+    let generatedData = Data([0x02])
+    let image = LensImage(
+      caption: "Woodblock study",
+      imageData: generatedData,
+      sourceImageData: sourceData,
+      provenance: .imagePlayground
+    )
+
+    dataContainer.context.insert(image)
+    try dataContainer.context.save()
+
+    let saved = try XCTUnwrap(
+      dataContainer.context.fetch(FetchDescriptor<LensImage>()).first
+    )
+    XCTAssertEqual(saved.imageData, generatedData)
+    XCTAssertEqual(saved.sourceImageData, sourceData)
+    XCTAssertNotEqual(saved.imageData, try XCTUnwrap(saved.sourceImageData))
+    XCTAssertEqual(saved.provenance, .imagePlayground)
+    XCTAssertTrue(saved.isAIGenerated)
+  }
+
+  @MainActor
   func testFailedTransactionDiscardsPendingImage() throws {
     let dataContainer = DataContainer(isStoredInMemoryOnly: true)
 
@@ -426,6 +482,39 @@ final class UkiyoFoundationTests: XCTestCase {
     } catch {
       // The concrete error is intentionally private to the photo service.
     }
+  }
+
+  @MainActor
+  func testImagePlaygroundSourceValidationUsesDocumentedMinimumDimensions() throws {
+    let validImage = UIGraphicsImageRenderer(
+      size: CGSize(width: 384, height: 384)
+    ).image { context in
+      UIColor.systemBlue.setFill()
+      context.fill(CGRect(x: 0, y: 0, width: 384, height: 384))
+    }
+    let tooSmallImage = UIGraphicsImageRenderer(
+      size: CGSize(width: 383, height: 512)
+    ).image { context in
+      UIColor.systemOrange.setFill()
+      context.fill(CGRect(x: 0, y: 0, width: 383, height: 512))
+    }
+
+    XCTAssertEqual(
+      ImagePreparation.imagePlaygroundSourceValidation(
+        for: try XCTUnwrap(validImage.jpegData(compressionQuality: 1))
+      ),
+      .valid
+    )
+    XCTAssertEqual(
+      ImagePreparation.imagePlaygroundSourceValidation(
+        for: try XCTUnwrap(tooSmallImage.jpegData(compressionQuality: 1))
+      ),
+      .tooSmall
+    )
+    XCTAssertEqual(
+      ImagePreparation.imagePlaygroundSourceValidation(for: Data([0x00])),
+      .invalid
+    )
   }
 
   func testPhotoPreparationPropagatesCancellationToDetachedWork() async {
