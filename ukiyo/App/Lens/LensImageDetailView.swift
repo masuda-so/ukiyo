@@ -12,6 +12,12 @@ struct LensImageDetailView: View {
   var body: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 16) {
+        if lensImage.isAIGenerated {
+          Label("AI Generated with Image Playground", systemImage: "sparkles")
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(.secondary)
+        }
+
         if let image = lensImage.image {
           Image(uiImage: image)
             .resizable()
@@ -19,9 +25,17 @@ struct LensImageDetailView: View {
             .clipShape(.rect(cornerRadius: 16))
             .accessibilityLabel(
               lensImage.caption.isEmpty
-                ? Text("Saved photo")
-                : Text(verbatim: lensImage.caption)
+                ? primaryImageAccessibilityLabel
+                : primaryImageAccessibilityLabelWithCaption
             )
+        }
+
+        if lensImage.isAIGenerated {
+          Text(
+            "This is a new AI-created image inspired by the source photo, not a transformed version of it."
+          )
+          .font(.footnote)
+          .foregroundStyle(.secondary)
         }
 
         if !lensImage.caption.isEmpty {
@@ -32,6 +46,19 @@ struct LensImageDetailView: View {
         Text(lensImage.createdAt, format: .dateTime.month().day().year())
           .font(.caption)
           .foregroundStyle(.secondary)
+
+        if lensImage.isAIGenerated, let sourceImage = lensImage.sourceImage {
+          Divider()
+
+          Text("Source Photo")
+            .font(.headline)
+
+          Image(uiImage: sourceImage)
+            .resizable()
+            .scaledToFit()
+            .clipShape(.rect(cornerRadius: 16))
+            .accessibilityLabel("Source photo used in Image Playground")
+        }
       }
       .padding()
     }
@@ -69,6 +96,16 @@ struct LensImageDetailView: View {
       get: { deletionError != nil },
       set: { if !$0 { deletionError = nil } }
     )
+  }
+
+  private var primaryImageAccessibilityLabel: Text {
+    lensImage.isAIGenerated ? Text("Saved AI-generated image") : Text("Saved photo")
+  }
+
+  private var primaryImageAccessibilityLabelWithCaption: Text {
+    lensImage.isAIGenerated
+      ? Text("Saved AI-generated image: \(lensImage.caption)")
+      : Text(verbatim: lensImage.caption)
   }
 
   private func deleteImage() {

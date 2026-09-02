@@ -2,8 +2,17 @@ import Foundation
 import ImageIO
 import UniformTypeIdentifiers
 
+/// The result of checking a prepared photo against Image Playground's source-image guidance.
+nonisolated enum ImagePlaygroundSourceValidation: Equatable, Sendable {
+  case valid
+  case invalid
+  case tooSmall
+}
+
 /// Downsamples and encodes imported image data before display and persistence.
 nonisolated enum ImagePreparation {
+  static let imagePlaygroundMinimumPixelDimension = 384
+
   /// A synchronous image-preparation operation executed away from the caller's actor.
   typealias Operation = @Sendable (Data) throws -> Data
 
@@ -29,6 +38,30 @@ nonisolated enum ImagePreparation {
     } onCancel: {
       task.cancel()
     }
+  }
+
+  /// Checks the expected 384-by-384-pixel minimum documented for source images.
+  static func imagePlaygroundSourceValidation(
+    for data: Data
+  ) -> ImagePlaygroundSourceValidation {
+    guard
+      let source = CGImageSourceCreateWithData(data as CFData, nil),
+      CGImageSourceGetCount(source) > 0,
+      let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil)
+        as? [CFString: Any],
+      let width = properties[kCGImagePropertyPixelWidth] as? Int,
+      let height = properties[kCGImagePropertyPixelHeight] as? Int
+    else {
+      return .invalid
+    }
+
+    guard
+      width >= imagePlaygroundMinimumPixelDimension,
+      height >= imagePlaygroundMinimumPixelDimension
+    else {
+      return .tooSmall
+    }
+    return .valid
   }
 
   private static func prepareImageData(from data: Data) throws -> Data {

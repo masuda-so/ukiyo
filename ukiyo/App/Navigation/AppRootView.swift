@@ -14,7 +14,7 @@ struct AppRootView: View {
   var body: some View {
     TabView(selection: $selection) {
       Tab("Lens", systemImage: "camera.filters", value: .lens) {
-        LensView()
+        LensView(selection: $selection)
       }
 
       Tab("Assistant", systemImage: "sparkles", value: .assistant) {
