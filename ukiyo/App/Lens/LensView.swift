@@ -15,11 +15,19 @@ struct LensView: View {
   @State private var persistenceError: String?
   @State private var saveTask: Task<Void, Never>?
 
+  @Binding var selection: AppSection
+
   var body: some View {
     NavigationStack {
       ScrollView {
         VStack(spacing: 24) {
           photoPicker
+          UkiyoImageGenerationView(
+            imageSelection: viewModel.imageSelection,
+            caption: caption,
+            showProOptions: { selection = .pro },
+            didSave: clearPhotoComposer
+          )
           imageLibrary
         }
         .padding(20)
@@ -62,7 +70,7 @@ struct LensView: View {
           }
           .buttonStyle(.bordered)
 
-          Button("Save", systemImage: "square.and.arrow.down") {
+          Button("Save Photo", systemImage: "square.and.arrow.down") {
             cancelSave()
             saveTask = Task {
               await save()
@@ -107,17 +115,24 @@ struct LensView: View {
             LensImageDetailView(lensImage: lensImage)
           } label: {
             if let image = lensImage.image {
-              Image(uiImage: image)
-                .resizable()
-                .scaledToFill()
-                .frame(height: 160)
-                .clipped()
-                .clipShape(.rect(cornerRadius: 16))
-                .accessibilityLabel(
-                  lensImage.caption.isEmpty
-                    ? Text("Saved photo")
-                    : Text(verbatim: lensImage.caption)
-                )
+              ZStack(alignment: .topTrailing) {
+                Image(uiImage: image)
+                  .resizable()
+                  .scaledToFill()
+                  .frame(height: 160)
+                  .clipped()
+
+                if lensImage.isAIGenerated {
+                  Label("AI Generated", systemImage: "sparkles")
+                    .font(.caption2.weight(.semibold))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(.regularMaterial, in: .capsule)
+                    .padding(8)
+                }
+              }
+              .clipShape(.rect(cornerRadius: 16))
+              .accessibilityLabel(accessibilityLabel(for: lensImage))
             }
           }
           .buttonStyle(.plain)
@@ -154,8 +169,7 @@ struct LensView: View {
       try modelContext.performTransactionOrRollback {
         modelContext.insert(lensImage)
       }
-      caption = ""
-      viewModel.imageSelection = nil
+      clearPhotoComposer()
     } catch is CancellationError {
       return
     } catch {
@@ -169,6 +183,21 @@ struct LensView: View {
     saveTask = nil
   }
 
+  private func clearPhotoComposer() {
+    caption = ""
+    viewModel.imageSelection = nil
+  }
+
+  private func accessibilityLabel(for lensImage: LensImage) -> Text {
+    let caption = lensImage.caption.trimmingCharacters(in: .whitespacesAndNewlines)
+    if lensImage.isAIGenerated {
+      return caption.isEmpty
+        ? Text("Saved AI-generated image")
+        : Text("Saved AI-generated image: \(caption)")
+    }
+    return caption.isEmpty ? Text("Saved photo") : Text(verbatim: caption)
+  }
+
   private var isShowingPersistenceError: Binding<Bool> {
     Binding(
       get: { persistenceError != nil },
@@ -178,7 +207,7 @@ struct LensView: View {
 }
 
 #Preview {
-  LensView()
+  LensView(selection: .constant(.lens))
     .environment(AppEnvironment.preview)
     .sampleDataContainer()
 }
