@@ -27,6 +27,20 @@ normative.
   encodes away from the main actor before persistence. `LensView` retains the save
   task and cancels it when the selection changes or the view disappears;
   `ImagePreparation` propagates that cancellation to its detached operation.
+- [Image Playground](https://developer.apple.com/documentation/imageplayground),
+  [`imagePlaygroundSheet(isPresented:concept:sourceImage:onCompletion:onCancellation:)`](https://developer.apple.com/documentation/swiftui/view/imageplaygroundsheet%28ispresented%3Aconcept%3Asourceimage%3Aoncompletion%3Aoncancellation%3A%29),
+  [`sourceImage`](https://developer.apple.com/documentation/imageplayground/imageplaygroundviewcontroller/sourceimage),
+  [`ImagePlaygroundStyle`](https://developer.apple.com/documentation/imageplayground/imageplaygroundstyle/),
+  [`supportsImagePlayground`](https://developer.apple.com/documentation/swiftui/environmentvalues/supportsimageplayground),
+  and [Explore advances in Image Playground](https://developer.apple.com/videos/play/wwdc2026/375/):
+  the Pro flow checks system availability, validates the documented 384-by-384-
+  pixel source-image minimum, passes the selected photo as visual inspiration
+  with an ukiyo-e/woodblock style concept, selects Illustration as the only
+  allowed style where that API is available, and lets Apple's system interface
+  own creation and review. The source is a starting point rather than a request
+  to transform the photo. Ukiyo immediately copies the temporary completion URL,
+  labels the draft as AI-generated, and persists source and result separately
+  only after explicit save. Cancellation saves no result.
 
 ## Family-wide references
 
@@ -50,7 +64,8 @@ normative.
   ([fixed ZIP](https://docs-assets.developer.apple.com/published/e843a4026a2e/OrigamiCraftingADynamicTutorialForAppleIntelligence.zip)):
   adopted the post-response cancellation check and iOS 27 Foundation Models
   error-type branching. Dynamic profiles, image prompts, streaming, term
-  extraction, and the sample's cache are outside the local adoption units.
+  extraction, and the sample's cache are outside the local Foundation Models
+  adoption units; the separate Image Playground integration uses the API above.
 - [Generative AI Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/generative-ai)
   and [Foundation Models acceptable-use requirements](https://developer.apple.com/apple-intelligence/acceptable-use-requirements-for-the-foundation-models-framework):
   people remain in control through explicit AI labeling, cancellation, review guidance,
@@ -132,12 +147,15 @@ normative.
 - [Foundation Models updates](https://developer.apple.com/documentation/updates/foundationmodels):
   Swift 6.4 builds map the iOS 27 `LanguageModelError`,
   `SystemLanguageModel.Error`, and `LanguageModelSession.Error` types. A compiler
-  condition keeps those SDK-27 declarations out of Swift 6.3 builds; iOS 26 uses
-  the common safe fallback without reintroducing the deprecated generation type.
-  Origami's downloadable error translation is the adopted comparison unit for
-  the shared `SystemLanguageModel.Error` and `LanguageModelError` branches.
+  condition keeps those SDK-27 declarations out of Swift 6.3 builds. Stable
+  Xcode 26 builds map the SDK's `LanguageModelSession.GenerationError` cases to
+  the same app-owned error vocabulary. Origami's downloadable error translation
+  is the adopted comparison unit for the shared `SystemLanguageModel.Error` and
+  `LanguageModelError` branches.
 - [Supporting languages and locales](https://developer.apple.com/documentation/foundationmodels/supporting-languages-and-locales-with-foundation-models):
-  locale support is checked before sending a prompt.
+  locale support is checked before sending a prompt. For non-US-English locales,
+  the prompt uses Apple's recommended `The person's locale is …` instruction;
+  the system's availability is rechecked when the app returns to the foreground.
 - [Preserving SwiftData models](https://developer.apple.com/documentation/swiftdata/preserving-your-apps-model-data-across-launches):
   `ModelContainer`, `ModelContext`, and `@Query` provide local persistence.
 - [`Schema.Attribute.Option.externalStorage`](https://developer.apple.com/documentation/swiftdata/schema/attribute/option/externalstorage):

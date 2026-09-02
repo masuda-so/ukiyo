@@ -16,6 +16,13 @@ current release evidence and must not be reused for the final submission.
   data. There is no account, analytics, ads, cloud sync, or remote AI service.
 - An explicitly invoked on-device caption/title/alt-text helper is available
   only when Apple Foundation Models are supported and Pro access is active.
+- An explicitly invoked Apple Image Playground flow is available only with Pro
+  access and when the system reports Image Playground support. It passes the
+  selected photo as visual inspiration for a new ukiyo-e/woodblock-inspired
+  creative image; it does not transform the selected photo. It labels generated
+  output and keeps source/result data separate after explicit save. Prepared
+  source images with either dimension below the documented 384-pixel minimum are
+  rejected before presentation. The flow introduces no new free-use quota.
 - StoreKit 2 product loading, purchase, restore, verified-entitlement, and
   transaction-update handling for one non-renewing Daily Pass and Monthly/
   Yearly auto-renewing subscriptions.
@@ -51,6 +58,14 @@ Complete StoreKit end-to-end checks with an Apple-distributed compatible
 Simulator runtime, a compatible physical device, or TestFlight/App Store Connect
 products. A local StoreKit failure is not sufficient evidence of production
 behavior.
+
+Image Playground end-to-end checks are separate from StoreKit tests. On a
+supported physical Apple Intelligence device, verify the Pro and system-
+availability gates, selected-source handoff, system review, cancellation,
+minimum-dimension rejection, failure handling, explicit save, source/result
+distinction, AI labeling, and deletion. Confirm that output is presented as a new
+creative image inspired by the source, not as a transformed source photo.
+Compilation or a Simulator run alone cannot verify generation.
 
 ## Human and external release gate
 

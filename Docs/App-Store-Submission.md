@@ -38,10 +38,19 @@ publication is external.
   not request unrestricted photo-library access.
 - Selected image data/captions remain in local SwiftData/external storage. The app
   has no account, analytics/ads, remote AI/content store, cloud sync, automatic
-  upload, or image generation.
+  upload, or external image-generation API.
+- With Pro access and system Image Playground availability, a user can explicitly
+  provide the selected photo as visual inspiration for a new ukiyo-e/woodblock-
+  inspired creative image in Apple's system interface; the system does not
+  transform the selected photo. On systems that support style selection, Ukiyo
+  restricts generation to Apple's Illustration style. It labels the result as
+  AI-generated and stores the source and result separately only after the user
+  chooses Save AI Image.
 - Image preparation bounds the long dimension to 1,600 pixels, encodes JPEG at
   quality 0.82, applies orientation, and intentionally does not preserve source
-  metadata. Review output quality on real representative images.
+  metadata. Image Playground input is rejected when either prepared dimension is
+  below its documented 384-pixel minimum. Review output quality on real
+  representative images.
 - `PrivacyInfo.xcprivacy` declares no tracking/collected data. Source and
   dependency assumptions must be rechecked against Apple's current Required
   Reason API list and the final Archive before confirming App Store privacy
@@ -53,8 +62,14 @@ publication is external.
 
 - Show system selection, explicit loading, prepared local save, caption, library,
   detail, and deletion with the free path available.
-- Explain that Pro only adds an explicitly invoked on-device caption/title/alt-text
-  helper and does not inspect an image unless described by the user.
+- Explain that Pro adds an explicitly invoked on-device caption/title/alt-text
+  helper, plus the separately invoked Apple Image Playground flow. The caption
+  helper does not inspect an image unless described by the user; Image Playground
+  receives only the photo selected for that flow, as visual inspiration for a new
+  creative image rather than as an image to transform.
+- Show the Image Playground availability gate, AI disclosure, system review,
+  cancellation, explicit save, source/result distinction, and generated badge on
+  a supported Apple Intelligence device.
 - Explain unsupported Foundation Models behavior and Daily Pass device-clock policy.
 - Show Restore, Manage Subscription, Privacy, Terms, and distinct Ukiyo visual-
   journal screenshots/copy for guideline 4.3.
@@ -78,7 +93,9 @@ the final determination.
 - [ ] Nine StoreKit E2E scenarios complete on a compatible runtime, device, or
       TestFlight build.
 - [ ] Real PhotosPicker, orientation, image quality/size, memory, deletion, iPad,
-      VoiceOver, Dynamic Type, localization, and failure-state checks pass.
+      VoiceOver, Dynamic Type, localization, and failure-state checks pass. Image
+      Playground creation/cancellation/save also passes on a supported physical
+      Apple Intelligence device; a build-only Simulator check is not E2E evidence.
 - [ ] Signed validation/TestFlight, public URLs, metadata, privacy/IAP answers,
       screenshots/review notes, and final human review are complete.
 

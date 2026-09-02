@@ -15,11 +15,16 @@ with optional on-device writing assistance.
 The system Photos picker exposes only the selected item. Imported images are
 orientation-corrected, resized to a maximum 1,600-pixel dimension, compressed,
 and stored with SwiftData external storage. Saved images can be reviewed and
-deleted.
+deleted. The free photo-journal path remains available without Pro.
 
 ## Intelligence and commerce
 
 The assistant uses Apple Foundation Models on supported devices and languages.
+Pro also offers an explicitly invoked Apple Image Playground flow on supported
+devices. It passes a selected photo to the system as visual inspiration for a
+new ukiyo-e/woodblock-inspired creative image; it does not transform that photo.
+The app labels the result as AI-generated and stores the selected photo and
+generated result separately only after an explicit save.
 The local StoreKit configuration provides:
 
 - `llc.ether.ukiyo.pro.daily`: non-renewing 24-hour Daily Pass.

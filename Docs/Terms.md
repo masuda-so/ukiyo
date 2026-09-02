@@ -1,6 +1,6 @@
 # Ukiyo Terms of Use
 
-Effective date: July 25, 2026
+Effective date: September 1, 2026
 
 These terms govern your use of Ukiyo, provided by Ether LLC.
 
@@ -9,6 +9,11 @@ These terms govern your use of Ukiyo, provided by Ether LLC.
 You may use Ukiyo for personal, lawful purposes. You are responsible for the
 content you create and for reviewing any assistant output before relying on,
 sharing, or acting on it.
+
+Image Playground results are new AI-generated creative images that use a selected
+photo as visual inspiration; they are not transformed versions of that photo.
+You are responsible for having the rights to use selected photos and for
+reviewing generated results before saving or sharing them.
 
 Ukiyo and its on-device assistant do not provide medical, mental-health, legal,
 financial, or emergency services. Generated output may be incomplete or
@@ -32,10 +37,10 @@ and applicable App Store terms.
 
 ## Availability and warranties
 
-Features that depend on Apple Foundation Models require a supported device,
-operating-system version, language, and model availability. Ukiyo is provided
-“as is” to the extent permitted by law, without a promise that every feature
-will always be available or error-free.
+Features that depend on Apple Foundation Models or Image Playground require a
+supported device, operating-system version, language, region, and applicable
+system-model availability. Ukiyo is provided “as is” to the extent permitted by
+law, without a promise that every feature will always be available or error-free.
 
 ## Changes and contact
 
