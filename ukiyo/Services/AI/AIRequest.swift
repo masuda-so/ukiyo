@@ -37,7 +37,8 @@ nonisolated enum AIUnavailableReason: String, Codable, CaseIterable, Equatable, 
     case .unsupportedOS:
       return String(localized: "This operating system version doesn’t support the on-device model.")
     case .unsupportedLocale:
-      return String(localized: "The on-device model doesn’t support the current language.")
+      return String(
+        localized: "The on-device model doesn’t support the current app language or locale.")
     case .deviceNotEligible:
       return String(localized: "This device doesn’t support the on-device model.")
     case .appleIntelligenceDisabled:

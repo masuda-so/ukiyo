@@ -46,6 +46,54 @@ final class AIPlatformTests: XCTestCase {
     XCTAssertTrue(request.prompt.contains(input))
   }
 
+  func testAssistantUsesAppleLocaleInstructionPhrase() {
+    let japaneseLocale = Locale(identifier: "ja_JP")
+
+    XCTAssertEqual(
+      UkiyoAssistant.localeInstructions(for: japaneseLocale),
+      "The person's locale is \(japaneseLocale.identifier)."
+    )
+    XCTAssertTrue(
+      UkiyoAssistant.localeInstructions(for: Locale(identifier: "en_US")).isEmpty
+    )
+  }
+
+  @MainActor
+  func testEnvironmentRefreshesAIAvailability() async {
+    let client = MutableAvailabilityAIClient(initialAvailability: .unavailable(.modelNotReady))
+    let environment = AppEnvironment(
+      aiClient: client,
+      subscriptionClient: PreviewSubscriptionClient()
+    )
+
+    await environment.refreshAIAvailability()
+    XCTAssertEqual(environment.aiAvailability, .unavailable(.modelNotReady))
+
+    await client.setAvailability(.available)
+    await environment.refreshAIAvailability()
+    XCTAssertEqual(environment.aiAvailability, .available)
+  }
+
+  @MainActor
+  func testAssistantRequestRechecksUnavailableModelBeforeRejecting() async {
+    let client = MutableAvailabilityAIClient(initialAvailability: .available)
+    let environment = AppEnvironment(
+      aiClient: client,
+      subscriptionClient: PreviewSubscriptionClient()
+    )
+    environment.aiAvailability = .unavailable(.modelNotReady)
+    environment.entitlements = EntitlementSnapshot(
+      activeProductIDs: [UkiyoCommerceCatalog.monthlyProductID]
+    )
+
+    await environment.requestAssistantResponse(for: "Reflect")
+
+    XCTAssertEqual(environment.aiAvailability, .available)
+    XCTAssertEqual(environment.assistantResponse, "Available response")
+    XCTAssertNil(environment.assistantErrorMessage)
+    XCTAssertFalse(environment.isGenerating)
+  }
+
   func testUnavailableClientReportsEveryReason() async {
     for reason in AIUnavailableReason.allCases {
       let client = UnavailableAIClient(reason: reason)
@@ -212,6 +260,62 @@ final class AIPlatformTests: XCTestCase {
   }
 
   #if canImport(FoundationModels)
+    @available(iOS 26.0, macOS 26.0, visionOS 26.0, *)
+    func testIOS26FoundationModelErrorsMapToApplicationErrors() throws {
+      #if compiler(>=6.4)
+        if #available(iOS 27.0, macOS 27.0, visionOS 27.0, *) {
+          throw XCTSkip("The iOS 26 GenerationError vocabulary is obsolete on iOS 27.")
+        }
+      #endif
+
+      let context = LanguageModelSession.GenerationError.Context(
+        debugDescription: "Stable SDK test"
+      )
+      let refusal = LanguageModelSession.GenerationError.Refusal(transcriptEntries: [])
+      let cases: [(any Error, AIError)] = [
+        (
+          LanguageModelSession.GenerationError.exceededContextWindowSize(context),
+          .contextWindowExceeded
+        ),
+        (
+          LanguageModelSession.GenerationError.assetsUnavailable(context),
+          .unavailable(.modelNotReady)
+        ),
+        (
+          LanguageModelSession.GenerationError.guardrailViolation(context),
+          .safetyGuardrail
+        ),
+        (
+          LanguageModelSession.GenerationError.unsupportedLanguageOrLocale(context),
+          .unsupportedLanguage
+        ),
+        (
+          LanguageModelSession.GenerationError.rateLimited(context),
+          .rateLimited
+        ),
+        (
+          LanguageModelSession.GenerationError.concurrentRequests(context),
+          .requestInProgress
+        ),
+        (
+          LanguageModelSession.GenerationError.refusal(refusal, context),
+          .requestRefused
+        ),
+        (
+          LanguageModelSession.GenerationError.unsupportedGuide(context),
+          .generationFailed(debugDescription: context.debugDescription)
+        ),
+        (
+          LanguageModelSession.GenerationError.decodingFailure(context),
+          .generationFailed(debugDescription: context.debugDescription)
+        ),
+      ]
+
+      for (error, expectedError) in cases {
+        XCTAssertEqual(FoundationModelAIClient.aiError(from: error), expectedError)
+      }
+    }
+
     #if compiler(>=6.4)
       @available(iOS 27.0, macOS 27.0, visionOS 27.0, *)
       func testFoundationModelErrorsMapToStableApplicationErrors() {
@@ -322,6 +426,26 @@ nonisolated private struct ClientTestError: LocalizedError {
   let diagnostic: String
 
   var errorDescription: String? { diagnostic }
+}
+
+private actor MutableAvailabilityAIClient: AIClient {
+  private var currentAvailability: AIAvailability
+
+  init(initialAvailability: AIAvailability) {
+    self.currentAvailability = initialAvailability
+  }
+
+  var availability: AIAvailability {
+    get async { currentAvailability }
+  }
+
+  func setAvailability(_ availability: AIAvailability) {
+    currentAvailability = availability
+  }
+
+  func respond(to request: AIRequest) async throws -> AIResponse {
+    AIResponse(text: "Available response")
+  }
 }
 
 private actor ControllableAIClient: AIClient {
