@@ -67,6 +67,11 @@ final class AppEnvironment {
     entitlements = await currentEntitlements
   }
 
+  /// Rechecks model eligibility after system settings or downloaded assets may have changed.
+  func refreshAIAvailability() async {
+    aiAvailability = await assistant.availability
+  }
+
   /// Restores App Store purchases and immediately applies the refreshed access state.
   func restorePurchases() async throws -> Bool {
     entitlements = try await subscriptionClient.restorePurchases()
@@ -123,9 +128,15 @@ final class AppEnvironment {
   /// Requests an assistant response and publishes the resulting UI state.
   func requestAssistantResponse(for text: String) async {
     guard !isGenerating else { return }
+    isGenerating = true
+    defer { isGenerating = false }
 
     assistantResponse = nil
     assistantErrorMessage = nil
+
+    if !isAIAvailable {
+      await refreshAIAvailability()
+    }
 
     guard isAIAvailable else {
       assistantErrorMessage = String(localized: "The on-device assistant is unavailable.")
@@ -136,9 +147,6 @@ final class AppEnvironment {
       assistantErrorMessage = String(localized: "Choose a Pro plan to use the on-device assistant.")
       return
     }
-
-    isGenerating = true
-    defer { isGenerating = false }
 
     do {
       let response = try await assistant.respond(to: text)
