@@ -798,12 +798,12 @@
         }
       }
     },
-    "The on-device assistant is unavailable on this device or for the current language. Paid plans can’t be purchased until it becomes available." : {
+    "The on-device assistant is unavailable on this device or for the current app language or locale. Paid plans can’t be purchased until it becomes available." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このデバイスまたは現在の言語ではオンデバイスアシスタントを利用できません。利用可能になるまで有料プランは購入できません。"
+            "value" : "このデバイス、または現在のアプリの言語やロケールではオンデバイスアシスタントを利用できません。利用可能になるまで有料プランは購入できません。"
           }
         }
       }
@@ -849,12 +849,12 @@
         }
       }
     },
-    "The on-device model doesn’t support the current language." : {
+    "The on-device model doesn’t support the current app language or locale." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "オンデバイスモデルは現在の言語に対応していません。"
+            "value" : "オンデバイスモデルは、現在のアプリの言語またはロケールに対応していません。"
           }
         }
       }
@@ -1078,7 +1078,327 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "バージョン"
+            "value" : "オンデバイスモデルを利用できません。"
+          }
+        }
+      }
+    },
+    "AI Generated" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI生成"
+          }
+        }
+      }
+    },
+    "AI Generated with Image Playground" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image PlaygroundでAI生成"
+          }
+        }
+      }
+    },
+    "AI-Generated Draft" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI生成画像の下書き"
+          }
+        }
+      }
+    },
+    "Choose a photo, then use Apple’s system interface to create and review a new ukiyo-e/woodblock-inspired image. The selected photo is visual inspiration, not an image that the system transforms." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を選び、Appleのシステム画面で、浮世絵・木版画風の新しい創作画像を作成して確認します。選択した写真は着想元として使われ、写真そのものが変換されるわけではありません。"
+          }
+        }
+      }
+    },
+    "Creation Cancelled" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作成をキャンセルしました"
+          }
+        }
+      }
+    },
+    "Discard Draft" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下書きを破棄"
+          }
+        }
+      }
+    },
+    "Generated Image" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成画像"
+          }
+        }
+      }
+    },
+    "Generated Image Unavailable" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成画像を取得できません"
+          }
+        }
+      }
+    },
+    "Image Playground Unavailable" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image Playgroundを利用できません"
+          }
+        }
+      }
+    },
+    "Image Playground generation is a Pro feature." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image Playgroundでの画像生成はPro機能です。"
+          }
+        }
+      }
+    },
+    "Image Playground isn’t available on this device, language, or region." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このデバイス、言語、または地域ではImage Playgroundを利用できません。"
+          }
+        }
+      }
+    },
+    "Image Playground creates a new image using the selected photo as visual inspiration; it does not transform the original photo." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image Playgroundは、選択した写真を着想元として新しい画像を作成します。元の写真そのものを変換するものではありません。"
+          }
+        }
+      }
+    },
+    "Image Playground expects a source photo that is at least 384 by 384 pixels. Choose a larger photo." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image Playgroundの元写真には、縦横ともに384ピクセル以上が必要です。より大きな写真を選んでください。"
+          }
+        }
+      }
+    },
+    "Japanese ukiyo-e woodblock-print style" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日本の浮世絵・木版画風"
+          }
+        }
+      }
+    },
+    "No generated image was saved." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成画像は保存されていません。"
+          }
+        }
+      }
+    },
+    "Open Image Playground" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image Playgroundを開く"
+          }
+        }
+      }
+    },
+    "Photo Too Small" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真のサイズが小さすぎます"
+          }
+        }
+      }
+    },
+    "Preparing the source photo…" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "元の写真を準備中…"
+          }
+        }
+      }
+    },
+    "Save AI Image" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI画像を保存"
+          }
+        }
+      }
+    },
+    "Save Photo" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を保存"
+          }
+        }
+      }
+    },
+    "Saved AI-generated image" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存したAI生成画像"
+          }
+        }
+      }
+    },
+    "Saved AI-generated image: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存したAI生成画像：%@"
+          }
+        }
+      }
+    },
+    "Source Photo" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "元の写真"
+          }
+        }
+      }
+    },
+    "Source photo used in Image Playground" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image Playgroundで使用した元の写真"
+          }
+        }
+      }
+    },
+    "The generated image couldn’t be saved. Please try again." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成画像を保存できませんでした。もう一度お試しください。"
+          }
+        }
+      }
+    },
+    "The result is a new AI-created image inspired by the selected photo, not a transformed version of that photo." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "結果は選択した写真を着想元としてAIが新たに作成した画像であり、その写真を変換したものではありません。"
+          }
+        }
+      }
+    },
+    "The selected photo couldn’t be prepared for Image Playground." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択した写真をImage Playground用に準備できませんでした。"
+          }
+        }
+      }
+    },
+    "This build does not include Apple’s Image Playground framework." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このビルドにはAppleのImage Playgroundフレームワークが含まれていません。"
+          }
+        }
+      }
+    },
+    "This is a new AI-created image inspired by the source photo, not a transformed version of it." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これは元の写真を着想元としてAIが新たに作成した画像であり、その写真を変換したものではありません。"
+          }
+        }
+      }
+    },
+    "Ukiyo couldn’t receive that generated image. Try again in Image Playground." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "生成画像を受け取れませんでした。Image Playgroundでもう一度お試しください。"
+          }
+        }
+      }
+    },
+    "Ukiyo-Inspired Image" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "浮世絵風の画像"
+          }
+        }
+      }
+    },
+    "Ukiyo-inspired generation requires Image Playground on a supported Apple Intelligence device." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "浮世絵風の画像生成には、Image Playgroundに対応するApple Intelligenceデバイスが必要です。"
           }
         }
       }
