@@ -32,15 +32,21 @@ struct PaywallView: View {
           if !environment.isAIAvailable {
             CardView {
               Label(
-                "The on-device assistant is unavailable on this device or for the current language. Paid plans can’t be purchased until it becomes available.",
+                "The on-device assistant is unavailable on this device or for the current app language or locale. Paid plans can’t be purchased until it becomes available.",
                 systemImage: "exclamationmark.triangle"
               )
               .foregroundStyle(.secondary)
             }
           } else {
-            StoreView(ids: ProductID.all)
-              .storeButton(.hidden, for: .cancellation)
-              .storeButton(.visible, for: .restorePurchases)
+            StoreView(
+              ids: ProductID.offeredProductIDs(
+                dailyPassIsActive: environment.isProductActive(
+                  UkiyoCommerceCatalog.dailyPassProductID
+                )
+              )
+            )
+            .storeButton(.hidden, for: .cancellation)
+            .storeButton(.visible, for: .restorePurchases)
 
             if let expirationDate = environment.entitlements.expirationDates[
               UkiyoCommerceCatalog.dailyPassProductID
