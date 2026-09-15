@@ -1,10 +1,38 @@
 import StoreKit
 import SwiftUI
+import ImagePlayground
 
 struct PaywallView: View {
+  var body: some View {
+    if #available(iOS 18.1, *) {
+      ImagePlaygroundPaywallView()
+    } else {
+      PaywallContent(supportsImagePlayground: false)
+    }
+  }
+}
+
+@available(iOS 18.1, *)
+private struct ImagePlaygroundPaywallView: View {
+  @Environment(\.supportsImagePlayground) private var supportsImagePlayground
+
+  var body: some View {
+    PaywallContent(supportsImagePlayground: supportsImagePlayground)
+  }
+}
+
+private struct PaywallContent: View {
+  let supportsImagePlayground: Bool
   @Environment(AppEnvironment.self) private var environment
   @Environment(\.locale) private var locale
   @State private var isShowingSubscriptionManagement = false
+
+  private var canOfferPro: Bool {
+    UkiyoAccessPolicy.canOfferPro(
+      assistantAvailable: environment.isAIAvailable,
+      imageGenerationAvailable: supportsImagePlayground
+    )
+  }
 
   var body: some View {
     NavigationStack {
@@ -29,15 +57,29 @@ struct PaywallView: View {
             .multilineTextAlignment(.center)
             .foregroundStyle(.secondary)
 
-          if !environment.isAIAvailable {
+          if !canOfferPro {
             CardView {
               Label(
-                "The on-device assistant is unavailable on this device or for the current app language or locale. Paid plans can’t be purchased until it becomes available.",
+                "Neither writing assistance nor image generation is available on this device. Paid plans can’t be purchased until a Pro feature becomes available.",
                 systemImage: "exclamationmark.triangle"
               )
               .foregroundStyle(.secondary)
             }
           } else {
+            if !environment.isAIAvailable {
+              Label(
+                "Image generation is available. Writing assistance is unavailable on this device or for the current language.",
+                systemImage: "info.circle"
+              )
+              .foregroundStyle(.secondary)
+            } else if !supportsImagePlayground {
+              Label(
+                "Writing assistance is available. Image generation is unavailable on this device, language, or region.",
+                systemImage: "info.circle"
+              )
+              .foregroundStyle(.secondary)
+            }
+
             StoreView(
               ids: ProductID.offeredProductIDs(
                 dailyPassIsActive: environment.isProductActive(
