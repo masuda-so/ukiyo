@@ -2,6 +2,14 @@ import Foundation
 
 /// Maps verified StoreKit entitlements to Ukiyo's product access.
 enum UkiyoAccessPolicy {
+  /// Offer Pro when at least one of its independently supported features is usable.
+  nonisolated static func canOfferPro(
+    assistantAvailable: Bool,
+    imageGenerationAvailable: Bool
+  ) -> Bool {
+    assistantAvailable || imageGenerationAvailable
+  }
+
   /// Returns the access level granted by the current entitlements.
   static func accessLevel(
     for entitlements: EntitlementSnapshot,

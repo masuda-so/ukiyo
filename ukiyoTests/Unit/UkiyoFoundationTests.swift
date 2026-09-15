@@ -11,6 +11,33 @@ import XCTest
 @testable import ukiyo
 
 final class UkiyoFoundationTests: XCTestCase {
+  func testProPurchaseSupportsImageGenerationWithoutWritingAssistant() {
+    XCTAssertTrue(
+      UkiyoAccessPolicy.canOfferPro(
+        assistantAvailable: false,
+        imageGenerationAvailable: true
+      )
+    )
+    XCTAssertTrue(
+      UkiyoAccessPolicy.canOfferPro(
+        assistantAvailable: true,
+        imageGenerationAvailable: false
+      )
+    )
+    XCTAssertTrue(
+      UkiyoAccessPolicy.canOfferPro(
+        assistantAvailable: true,
+        imageGenerationAvailable: true
+      )
+    )
+    XCTAssertFalse(
+      UkiyoAccessPolicy.canOfferPro(
+        assistantAvailable: false,
+        imageGenerationAvailable: false
+      )
+    )
+  }
+
   @MainActor
   func testProductIdentityMatchesBundleConvention() {
     let product = ProductDefinition.ukiyo
