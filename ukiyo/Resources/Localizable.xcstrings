@@ -1126,7 +1126,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "オンデバイスモデルを利用できません。"
+            "value" : "バージョン"
           }
         }
       }
