@@ -513,31 +513,32 @@ final class UkiyoFoundationTests: XCTestCase {
 
   @MainActor
   func testImagePlaygroundSourceValidationUsesDocumentedMinimumDimensions() throws {
-    let validImage = UIGraphicsImageRenderer(
-      size: CGSize(width: 384, height: 384)
-    ).image { context in
-      UIColor.systemBlue.setFill()
-      context.fill(CGRect(x: 0, y: 0, width: 384, height: 384))
+    // The source-image requirement is in pixels, independent of display scale.
+    let format = UIGraphicsImageRendererFormat()
+    format.scale = 1
+    let cases: [(width: Int, height: Int, expected: ImagePlaygroundSourceValidation)] = [
+      (384, 384, .valid),
+      (383, 512, .tooSmall),
+      (512, 383, .tooSmall),
+    ]
+    for testCase in cases {
+      let size = CGSize(width: testCase.width, height: testCase.height)
+      let image = UIGraphicsImageRenderer(size: size, format: format).image { context in
+        UIColor.systemBlue.setFill()
+        context.fill(CGRect(origin: .zero, size: size))
+      }
+      let data = try XCTUnwrap(image.jpegData(compressionQuality: 1))
+      let source = try XCTUnwrap(CGImageSourceCreateWithData(data as CFData, nil))
+      let properties = try XCTUnwrap(
+        CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any]
+      )
+      XCTAssertEqual(properties[kCGImagePropertyPixelWidth] as? Int, testCase.width)
+      XCTAssertEqual(properties[kCGImagePropertyPixelHeight] as? Int, testCase.height)
+      XCTAssertEqual(
+        ImagePreparation.imagePlaygroundSourceValidation(for: data),
+        testCase.expected
+      )
     }
-    let tooSmallImage = UIGraphicsImageRenderer(
-      size: CGSize(width: 383, height: 512)
-    ).image { context in
-      UIColor.systemOrange.setFill()
-      context.fill(CGRect(x: 0, y: 0, width: 383, height: 512))
-    }
-
-    XCTAssertEqual(
-      ImagePreparation.imagePlaygroundSourceValidation(
-        for: try XCTUnwrap(validImage.jpegData(compressionQuality: 1))
-      ),
-      .valid
-    )
-    XCTAssertEqual(
-      ImagePreparation.imagePlaygroundSourceValidation(
-        for: try XCTUnwrap(tooSmallImage.jpegData(compressionQuality: 1))
-      ),
-      .tooSmall
-    )
     XCTAssertEqual(
       ImagePreparation.imagePlaygroundSourceValidation(for: Data([0x00])),
       .invalid
