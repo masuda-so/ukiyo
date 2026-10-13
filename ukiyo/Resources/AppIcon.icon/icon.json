@@ -1,0 +1,212 @@
+{
+  "groups": [
+    {
+      "name": "2-mountain",
+      "layers": [
+        {
+          "name": "3-snow",
+          "image-name": "ukiyo-snow.svg",
+          "glass": true,
+          "fill-specializations": [
+            {
+              "value": {
+                "linear-gradient": [
+                  "srgb:1.00000,1.00000,1.00000,1.00000",
+                  "srgb:0.89412,0.88627,0.94902,1.00000"
+                ],
+                "orientation": {
+                  "start": {
+                    "x": 0.5,
+                    "y": 0
+                  },
+                  "stop": {
+                    "x": 0.5,
+                    "y": 1
+                  }
+                }
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "linear-gradient": [
+                  "srgb:0.90196,0.92549,1.00000,1.00000",
+                  "srgb:0.76471,0.81176,0.94118,1.00000"
+                ],
+                "orientation": {
+                  "start": {
+                    "x": 0.5,
+                    "y": 0
+                  },
+                  "stop": {
+                    "x": 0.5,
+                    "y": 1
+                  }
+                }
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "linear-gradient": [
+                  "srgb:0.85098,0.86667,0.90196,1.00000",
+                  "srgb:0.76078,0.78431,0.83137,1.00000"
+                ],
+                "orientation": {
+                  "start": {
+                    "x": 0.5,
+                    "y": 0
+                  },
+                  "stop": {
+                    "x": 0.5,
+                    "y": 1
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "2-mountain",
+          "image-name": "ukiyo-front.svg",
+          "glass": true,
+          "fill-specializations": [
+            {
+              "value": {
+                "linear-gradient": [
+                  "srgb:0.16863,0.24706,0.47843,1.00000",
+                  "srgb:0.11765,0.18431,0.36078,1.00000"
+                ],
+                "orientation": {
+                  "start": {
+                    "x": 0.5,
+                    "y": 0
+                  },
+                  "stop": {
+                    "x": 0.5,
+                    "y": 1
+                  }
+                }
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "linear-gradient": [
+                  "srgb:0.30196,0.41961,0.75294,1.00000",
+                  "srgb:0.16863,0.24706,0.47843,1.00000"
+                ],
+                "orientation": {
+                  "start": {
+                    "x": 0.5,
+                    "y": 0
+                  },
+                  "stop": {
+                    "x": 0.5,
+                    "y": 1
+                  }
+                }
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "linear-gradient": [
+                  "srgb:0.03137,0.06275,0.16471,1.00000",
+                  "srgb:0.01961,0.03922,0.10196,1.00000"
+                ],
+                "orientation": {
+                  "start": {
+                    "x": 0.5,
+                    "y": 0
+                  },
+                  "stop": {
+                    "x": 0.5,
+                    "y": 1
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "lighting": "individual",
+      "specular": true,
+      "blur-material": null,
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.125
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
+      }
+    },
+    {
+      "name": "1-photo",
+      "layers": [
+        {
+          "name": "1-photo",
+          "image-name": "ukiyo-back.png",
+          "glass": true
+        }
+      ],
+      "lighting": "individual",
+      "specular": true,
+      "blur-material": null,
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.125
+      },
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
+      }
+    }
+  ],
+  "supported-platforms": {
+    "circles": [
+      "watchOS"
+    ],
+    "squares": "shared"
+  },
+  "fill-specializations": [
+    {
+      "value": {
+        "linear-gradient": [
+          "srgb:0.93725,0.36471,0.61176,1.00000",
+          "srgb:0.87059,0.25882,0.52549,1.00000"
+        ],
+        "orientation": {
+          "start": {
+            "x": 0.5,
+            "y": 0
+          },
+          "stop": {
+            "x": 0.5,
+            "y": 1
+          }
+        }
+      }
+    },
+    {
+      "appearance": "dark",
+      "value": {
+        "linear-gradient": [
+          "srgb:0.16078,0.16078,0.16078,1.00000",
+          "srgb:0.05098,0.05098,0.05098,1.00000"
+        ],
+        "orientation": {
+          "start": {
+            "x": 0.5,
+            "y": 0
+          },
+          "stop": {
+            "x": 0.5,
+            "y": 1
+          }
+        }
+      }
+    }
+  ]
+}
