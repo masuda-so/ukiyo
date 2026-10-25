@@ -1,6 +1,6 @@
 # Ukiyo Terms of Use
 
-Effective date: September 1, 2026
+Effective date: October 23, 2026
 
 These terms govern your use of Ukiyo, provided by Ether LLC.
 
