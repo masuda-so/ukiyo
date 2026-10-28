@@ -1,3 +1,4 @@
+import Foundation
 import StoreKit
 import StoreKitTest
 import XCTest
@@ -377,6 +378,20 @@ final class StoreKitIntegrationTests: XCTestCase {
 
   @MainActor
   private func makeSession() async throws -> SKTestSession {
+    // Diagnostic metadata only; this does not change StoreKit or app data.
+    do {
+      let metadata: [String: Any] = [
+        "pid": Int(ProcessInfo.processInfo.processIdentifier),
+        "timestamp": Date().timeIntervalSince1970,
+        "test": name,
+        "bundleIdentifier": Bundle.main.bundleIdentifier ?? ""
+      ]
+      let marker = FileManager.default.temporaryDirectory
+        .appendingPathComponent("storekit-ci-host.json")
+      try JSONSerialization.data(withJSONObject: metadata).write(to: marker, options: .atomic)
+    } catch {
+      print("StoreKit diagnostic metadata unavailable: \(error)")
+    }
     print("StoreKit fixture phase \(Date()): create and reset session")
     let session = try SKTestSession(
       contentsOf: TestResources.url(forResource: "StoreKit", withExtension: "storekit")

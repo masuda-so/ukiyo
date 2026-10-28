@@ -70,6 +70,57 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p artifacts/process-samples
+          rm -f artifacts/process-samples/stop
+          python3 - <<'PYTHON' &
+          import datetime, json, os, pathlib, subprocess, time
+          root = pathlib.Path("artifacts/process-samples").resolve()
+          root.mkdir(parents=True, exist_ok=True)
+          stop = root / "stop"
+          started_wall = time.time()
+          started = time.monotonic()
+          next_sample = 0.0
+          attempts = 0
+          with (root / "sampler.log").open("w", buffering=1) as log:
+              while not stop.exists() and time.monotonic() - started < 1200 and attempts < 4:
+                  if time.monotonic() < next_sample:
+                      time.sleep(0.5)
+                      continue
+                  try:
+                      result = subprocess.run(["xcrun", "simctl", "get_app_container", os.environ["SIMULATOR_ID"], "llc.ether.ukiyo", "data"], capture_output=True, text=True, timeout=10)
+                      if result.returncode != 0:
+                          print("get_app_container failed", result.returncode, result.stderr, file=log)
+                          next_sample = time.monotonic() + 5
+                          continue
+                      container = pathlib.Path(result.stdout.strip())
+                      if not container.is_absolute() or os.environ["SIMULATOR_ID"].lower() not in str(container).lower():
+                          print("Unexpected container path; diagnostic stopped", file=log)
+                          break
+                      marker = json.loads((container / "tmp/storekit-ci-host.json").read_text())
+                      if marker.get("timestamp", 0) < started_wall or marker.get("bundleIdentifier") != "llc.ether.ukiyo" or "testEntitlementUpdatesProcessesAndFinishesUnfinishedTransaction" not in marker.get("test", ""):
+                          next_sample = time.monotonic() + 1
+                          continue
+                      pid = marker["pid"]
+                      if not isinstance(pid, int) or isinstance(pid, bool) or pid <= 1:
+                          print("Invalid test-host pid; diagnostic stopped", file=log)
+                          break
+                      os.kill(pid, 0)
+                      attempts += 1
+                      print(datetime.datetime.now(datetime.timezone.utc).isoformat(), marker, file=log)
+                      sampled = subprocess.run(["/usr/bin/sample", str(pid), "3", "10", "-mayDie", "-file", str(root / f"ukiyo-{attempts}.sample.txt")], capture_output=True, text=True, timeout=10)
+                      print("sample exit", sampled.returncode, sampled.stdout, sampled.stderr, file=log)
+                      next_sample = time.monotonic() + 25
+                  except (OSError, ValueError, KeyError, subprocess.TimeoutExpired) as error:
+                      print(type(error).__name__, str(error), file=log)
+                      next_sample = time.monotonic() + 5
+              print("Diagnostic finished; sample attempts", attempts, file=log)
+          PYTHON
+          sampler_pid=$!
+          finish_sampling() {
+            touch artifacts/process-samples/stop
+            wait "$sampler_pid" || true
+          }
+          trap finish_sampling EXIT
           xcodebuild test \
             -project ukiyo.xcodeproj \
             -scheme ukiyo \
