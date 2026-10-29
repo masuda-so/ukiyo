@@ -8,6 +8,9 @@ on:
       - '.github/workflows/storekit-validation.yml'
       - 'ukiyo/Resources/StoreKit/StoreKit.storekit'
       - 'ukiyoTests/Integration/StoreKitIntegrationTests.swift'
+      - 'ukiyo/App/UkiyoApp.swift'
+      - 'ukiyo/App/General/AppEnvironment.swift'
+      - 'ukiyo.xcodeproj/xcshareddata/xcschemes/ukiyo.xcscheme'
 
 permissions:
   contents: read
