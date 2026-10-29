@@ -5,15 +5,20 @@ import StoreKit
 actor StoreKitSubscriptionClient: SubscriptionClient {
   private let catalog: SubscriptionCatalog
   private let now: @Sendable () -> Date
+  private let finishTransaction: @Sendable (Transaction) async -> Void
   private var productsByID: [String: Product] = [:]
 
-  /// Creates a StoreKit client with an injectable wall clock for entitlement checks.
+  /// Creates a StoreKit client with injectable clock and transaction completion.
   init(
     catalog: SubscriptionCatalog,
-    now: @escaping @Sendable () -> Date = Date.init
+    now: @escaping @Sendable () -> Date = Date.init,
+    finishTransaction: @escaping @Sendable (Transaction) async -> Void = {
+      await $0.finish()
+    }
   ) {
     self.catalog = catalog
     self.now = now
+    self.finishTransaction = finishTransaction
   }
 
   func loadProducts() async throws -> [SubscriptionProduct] {
@@ -49,7 +54,7 @@ actor StoreKitSubscriptionClient: SubscriptionClient {
       return try await Self.purchaseOutcome(from: result) { verification in
         let transaction = try Self.verifiedValue(from: verification)
         let entitlements = await self.currentEntitlements()
-        await transaction.finish()
+        await self.finishTransaction(transaction)
         return .purchased(entitlements)
       }
     } catch is CancellationError {
@@ -130,22 +135,9 @@ actor StoreKitSubscriptionClient: SubscriptionClient {
   }
 
   func entitlementUpdates() async -> AsyncStream<EntitlementSnapshot> {
-    #if DEBUG
-    Self.logStoreKitTestPhase("stream.entry")
-    #endif
     return AsyncStream { continuation in
-      #if DEBUG
-      Self.logStoreKitTestPhase("stream.builder.enter")
-      #endif
       let initialTransactionsTask = Task(priority: .background) {
-        #if DEBUG
-        Self.logStoreKitTestPhase("initial.start priority=\(Task.currentPriority)")
-        defer { Self.logStoreKitTestPhase("initial.end cancelled=\(Task.isCancelled)") }
-        #endif
         for await verificationResult in Transaction.unfinished {
-          #if DEBUG
-          Self.logStoreKitTestVerification("initial.unfinished.received", result: verificationResult)
-          #endif
           guard !Task.isCancelled else { break }
           if let entitlements = await self.handle(
             updatedTransaction: verificationResult
@@ -154,24 +146,11 @@ actor StoreKitSubscriptionClient: SubscriptionClient {
           }
         }
 
-        #if DEBUG
-        Self.logStoreKitTestPhase("initial.unfinished.ended; currentEntitlements.begin")
-        #endif
         continuation.yield(await self.currentEntitlements())
-        #if DEBUG
-        Self.logStoreKitTestPhase("initial.currentEntitlements.yielded")
-        #endif
       }
 
       let transactionUpdatesTask = Task(priority: .background) {
-        #if DEBUG
-        Self.logStoreKitTestPhase("updates.start priority=\(Task.currentPriority)")
-        defer { Self.logStoreKitTestPhase("updates.end cancelled=\(Task.isCancelled)") }
-        #endif
         for await verificationResult in Transaction.updates {
-          #if DEBUG
-          Self.logStoreKitTestVerification("updates.updates.received", result: verificationResult)
-          #endif
           guard !Task.isCancelled else { break }
           if let entitlements = await self.handle(
             updatedTransaction: verificationResult
@@ -184,83 +163,23 @@ actor StoreKitSubscriptionClient: SubscriptionClient {
       }
 
       continuation.onTermination = { _ in
-        #if DEBUG
-        Self.logStoreKitTestPhase("stream.termination; cancel.request")
-        #endif
         initialTransactionsTask.cancel()
         transactionUpdatesTask.cancel()
-        #if DEBUG
-        Self.logStoreKitTestPhase("stream.cancel.request.returned")
-        #endif
       }
     }
   }
 
-  #if DEBUG
-  private nonisolated static func logStoreKitTestPhase(
-    _ phase: String,
-    transaction: Transaction? = nil
-  ) {
-    guard CommandLine.arguments.contains("--disable-test-host-storekit-monitor") else {
-      return
-    }
-    let timestamp = Date()
-    let transactionContext: String
-    if let transaction, transaction.environment == .xcode {
-      transactionContext = " transaction=\(transaction.id) product=\(transaction.productID)"
-    } else {
-      transactionContext = ""
-    }
-    print("StoreKit client phase \(timestamp.timeIntervalSince1970) [\(timestamp)]: \(phase)\(transactionContext)")
-  }
-
-  private nonisolated static func logStoreKitTestVerification(
-    _ phase: String,
-    result: VerificationResult<Transaction>
-  ) {
-    switch result {
-    case .verified(let transaction):
-      logStoreKitTestPhase(phase + ".verified", transaction: transaction)
-    case .unverified:
-      logStoreKitTestPhase(phase + ".unverified")
-    }
-  }
-  #endif
   private func handle(
     updatedTransaction verificationResult: VerificationResult<Transaction>
   ) async -> EntitlementSnapshot? {
-    #if DEBUG
-    Self.logStoreKitTestPhase("handle.start")
-    defer { Self.logStoreKitTestPhase("handle.end cancelled=\(Task.isCancelled)") }
-    switch verificationResult {
-    case .verified(let transaction):
-      if !catalog.productIDs.contains(transaction.productID) {
-        Self.logStoreKitTestPhase("handle.ignored.productOutsideCatalog", transaction: transaction)
-      }
-    case .unverified:
-      Self.logStoreKitTestPhase("handle.ignored.unverified")
-    }
-    #endif
     guard case .verified(let transaction) = verificationResult,
       catalog.productIDs.contains(transaction.productID)
     else {
       return nil
     }
 
-    #if DEBUG
-    Self.logStoreKitTestPhase("handle.currentEntitlements.begin", transaction: transaction)
-    #endif
     let entitlements = await currentEntitlements()
-    #if DEBUG
-    Self.logStoreKitTestPhase("handle.currentEntitlements.returned", transaction: transaction)
-    #endif
-    #if DEBUG
-    Self.logStoreKitTestPhase("handle.finish.begin", transaction: transaction)
-    #endif
-    await transaction.finish()
-    #if DEBUG
-    Self.logStoreKitTestPhase("handle.finish.returned", transaction: transaction)
-    #endif
+    await self.finishTransaction(transaction)
     return entitlements
   }
 
