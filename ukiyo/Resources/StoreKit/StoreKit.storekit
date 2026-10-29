@@ -7,12 +7,12 @@
       "internalID" : "1000000001",
       "localizations" : [
         {
-          "description" : "One-time access to Ukiyo Pro for 24 hours. This pass does not renew automatically.",
+          "description" : "24-hour Pro access. No automatic renewal.",
           "displayName" : "Ukiyo Pro Daily Pass",
           "locale" : "en_US"
         },
         {
-          "description" : "Ukiyo Proを24時間利用できる買い切りパスです。自動更新されません。",
+          "description" : "Proを24時間利用。自動更新はありません。",
           "displayName" : "Ukiyo Pro デイリーパス",
           "locale" : "ja_JP"
         }
@@ -34,11 +34,13 @@
       "localizations" : [
         {
           "locale" : "en_US",
-          "name" : "Ukiyo Pro"
+          "displayName" : "Ukiyo Pro",
+          "description" : ""
         },
         {
           "locale" : "ja_JP",
-          "name" : "Ukiyo Pro"
+          "displayName" : "Ukiyo Pro",
+          "description" : ""
         }
       ],
       "name" : "Ukiyo Pro",
@@ -55,12 +57,12 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Monthly access to the on-device Ukiyo assistant.",
+              "description" : "Monthly Pro access. Renews automatically.",
               "displayName" : "Ukiyo Pro Monthly",
               "locale" : "en_US"
             },
             {
-              "description" : "オンデバイスのUkiyoアシスタントを月ごとに利用できます。",
+              "description" : "Proを1か月利用。自動更新します。",
               "displayName" : "Ukiyo Pro 月額",
               "locale" : "ja_JP"
             }
@@ -83,12 +85,12 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Yearly access to the on-device Ukiyo assistant.",
+              "description" : "Yearly Pro access. Renews automatically.",
               "displayName" : "Ukiyo Pro Yearly",
               "locale" : "en_US"
             },
             {
-              "description" : "オンデバイスのUkiyoアシスタントを年ごとに利用できます。",
+              "description" : "Proを1年間利用。自動更新します。",
               "displayName" : "Ukiyo Pro 年額",
               "locale" : "ja_JP"
             }
