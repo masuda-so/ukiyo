@@ -412,3 +412,13 @@ LensImageTransfer.swift and ImagePreparation.swift are locally composed from
 public CoreTransferable and Image I/O APIs and aren't copied from the Photos
 picker sample. Public SwiftData calls used for Ukiyo's own LensImage model
 likewise do not, by themselves, create another sample-code attribution.
+
+
+## AGENTS.md
+
+The title and section outline of `AGENTS.md` follow the outline that OpenAI
+Codex uses when it generates an `AGENTS.md` with its `/init` command
+([openai/codex](https://github.com/openai/codex/blob/6478a751fde8884b2fdc76486fe23175a8e795d4/codex-rs/tui/assets/prompt_for_init_command.md),
+`codex-rs/tui/assets/prompt_for_init_command.md`, commit `6478a751fde8`,
+2026-08-29, Apache-2.0). The headings are translated into Japanese; the contents
+are this repository's own.
