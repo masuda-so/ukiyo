@@ -57,7 +57,9 @@ private struct PaywallContent: View {
             .multilineTextAlignment(.center)
             .foregroundStyle(.secondary)
 
-          if !canOfferPro {
+          if !environment.hasLoadedInitialState {
+            ProgressView("Checking…")
+          } else if !canOfferPro {
             CardView {
               Label(
                 "Neither writing assistance nor image generation is available on this device. Paid plans can’t be purchased until a Pro feature becomes available.",
