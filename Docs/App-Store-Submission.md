@@ -1,6 +1,8 @@
 # Ukiyo App Store submission record
 
-Status: pre-submission. This defines gates, not a submission or release date.
+This is a working submission checklist, not a submission or public-release
+date. Every technical item must be revalidated against the current tree and
+final stable Xcode toolchain.
 
 ## App identity
 
@@ -32,7 +34,7 @@ The app points to Privacy, Terms, and Support. Deploy all pages and verify
 anonymous mobile access outside the local network before submission;
 publication is external.
 
-## Privacy and photo access
+## Privacy and data handling
 
 - The system PhotosPicker exposes only the item selected by the user. Ukiyo does
   not request unrestricted photo-library access.
@@ -82,6 +84,13 @@ created, non-SF-Symbol family foreground. Confirm the built icon at required
 sizes and supported appearances with the current stable Xcode. App Review makes
 the final determination.
 
+## Licensed Apple sample material
+
+Ukiyo incorporates portions of Apple's distributed sample code and related
+Apple samples. Keep the applicable source links, copyright notices, and license
+text in `THIRD_PARTY_NOTICES.md`, and include the used code and assets in the
+final legal/content-rights review. Apple names do not imply endorsement.
+
 ## Technical gate
 
 - [ ] Static privacy, photo-access, localization, and legal-URL checks complete.
@@ -101,3 +110,8 @@ the final determination.
 
 No signing, upload, publication, or external message is performed without
 separate authorization.
+
+Record the selected stable Xcode/SDK/runtime, test results, Analyze result,
+Archive identity and contents, and public-URL checks after the current tree is
+revalidated. Do not reuse results or hashes from an earlier revision. The
+remaining gates are summarized in [Release.md](Release.md).

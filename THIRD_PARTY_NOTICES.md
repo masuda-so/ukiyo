@@ -12,8 +12,8 @@ Pass policy are local work.
 
 The shipping `ukiyo/Resources/AppIcon.icon` composition and its
 `ukiyo-back.png`, `ukiyo-front.svg`, and `ukiyo-snow.svg` layers are local artwork, not Apple sample code
-or an SF Symbol. Apple icon documentation informs canvas, mask, appearance, and
-packaging decisions.
+or an SF Symbol. Apple icon documentation is used for canvas, mask, appearance,
+and packaging guidance.
 
 ## Bringing Photos picker to your SwiftUI app
 

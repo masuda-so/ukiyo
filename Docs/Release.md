@@ -1,10 +1,11 @@
 # Ukiyo release readiness
 
-Status: pre-release. This document defines requirements and gates; it does not
-set a submission or release date. Previous local build and test results are not
-current release evidence and must not be reused for the final submission.
+This document defines the current release scope and remaining gates. It does not
+set a submission or public-release date. Because the implementation and project
+configuration have changed, all technical checks below must be rerun against the
+current tree before submission.
 
-## v1 scope
+## Implemented v1
 
 - iOS 18 minimum deployment target with iPhone and iPad support.
 - A private, local-first visual journal: system PhotosPicker selection, bounded
@@ -46,34 +47,29 @@ toolchain and destination when these checks are rerun.
       configuration and test payloads.
 - [ ] The final signed Archive is validated before TestFlight or submission.
 
-## StoreKit and external environment gate
-
-The nine StoreKit Test scenarios remain required: product loading; verified
-purchase and finish; unfinished-transaction processing; restore; Daily Pass
-boundary; Ask to Buy pending; refund revocation; Daily Pass repurchase from the
-latest signed purchase date; and auto-renew cancellation with access through
-expiration. The Daily Pass does not auto-renew or stack.
-
-Complete StoreKit end-to-end checks with an Apple-distributed compatible
-Simulator runtime, a compatible physical device, or TestFlight/App Store Connect
-products. A local StoreKit failure is not sufficient evidence of production
-behavior.
-
-Image Playground end-to-end checks are separate from StoreKit tests. On a
-supported physical Apple Intelligence device, verify the Pro and system-
-availability gates, selected-source handoff, system review, cancellation,
-minimum-dimension rejection, failure handling, explicit save, source/result
-distinction, AI labeling, and deletion. Confirm that output is presented as a new
-creative image inspired by the source, not as a transformed source photo.
-Compilation or a Simulator run alone cannot verify generation.
-
-## Human and external release gate
+## App Store submission gates
 
 - Configure the app record, version/build/SKU, Apple Distribution signing, and
   provisioning for `llc.ether.ukiyo` in App Store Connect.
 - Create/localize all three products, set price/availability/review assets, put
   Monthly and Yearly in one same-level subscription group, and include first
   products with the app-version submission as required.
+- The nine StoreKit Test scenarios remain required: product loading; verified
+  purchase and finish; unfinished-transaction processing; restore; Daily Pass
+  boundary; Ask to Buy pending; refund revocation; Daily Pass repurchase from the
+  latest signed purchase date; and auto-renew cancellation with access through
+  expiration. The Daily Pass does not auto-renew or stack.
+- Complete StoreKit end-to-end checks with an Apple-distributed compatible
+  Simulator runtime, a compatible physical device, or TestFlight/App Store Connect
+  products. A local StoreKit failure is not sufficient evidence of production
+  behavior.
+- Image Playground end-to-end checks are separate from StoreKit tests. On a
+  supported physical Apple Intelligence device, verify the Pro and system-
+  availability gates, selected-source handoff, system review, cancellation,
+  minimum-dimension rejection, failure handling, explicit save, source/result
+  distinction, AI labeling, and deletion. Confirm that output is presented as a
+  new creative image inspired by the source, not as a transformed source photo.
+  Compilation or a Simulator run alone cannot verify generation.
 - Publish and anonymously verify the fixed public URLs:
   - Privacy: `https://ether-llc.com/apps/ukiyo/privacy/`
   - Terms: `https://ether-llc.com/apps/ukiyo/terms/`
@@ -90,10 +86,18 @@ Compilation or a Simulator run alone cannot verify generation.
 - Complete signed Archive validation, TestFlight, compatible physical-device
   testing, and final human review. Signing/upload/publication remain external.
 
-## Icon decision
+## Icon disposition
 
 Use `ukiyo/Resources/AppIcon.icon` as the sole app-icon source. Its locally
 created, non-SF-Symbol foreground remains installed in the layered Icon Composer
 asset. The current stable Xcode must render the supported appearances, and the
 final Archive must contain the compiled icon. Inspect masks, appearances, and
 small sizes on real devices; App Review makes the final determination.
+
+## External or human blockers
+
+Only Apple credentials/signing, App Store Connect state, an Apple-compatible
+StoreKit environment, TestFlight/physical-device verification, public legal and
+support URL acceptance, and final legal/content/accessibility/UI judgment may
+remain external. No signing, validation, upload, release, deployment,
+publication, or external message is authorized by this document.
