@@ -4,12 +4,19 @@ Ukiyo is a local-first creative lens for image ideas, captions, and visual histo
 It includes Photos picker import, explicit loading states, captions, and a local
 visual library.
 
-## Initial navigation
+## Navigation
 
 - Lens
 - Assistant
 - Pro
 - Settings
+
+## Core experience
+
+The system Photos picker exposes only the selected item. Imported images are
+orientation-corrected, resized to a maximum 1,600-pixel dimension, compressed,
+and stored with SwiftData external storage. Saved images can be reviewed and
+deleted. The free photo-journal path remains available without Pro.
 
 ## Commerce baseline
 
